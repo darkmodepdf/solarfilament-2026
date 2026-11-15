@@ -1,0 +1,25 @@
+{
+  "date": "2026-11-15",
+  "status": "DRAFT: results, figures, hardware measurements, final assets and contact fields pending",
+  "compiler": "Tectonic 0.17.0 (Windows x86_64 MSVC)",
+  "compiler_release_sha256": "f61ce51f0b0ade1015b7de7ef368541c5424e9756ecbd0d7af97d6d48030845f",
+  "bundle_url": "https://data1b.fullyjustified.net/tlextras-2022.0r0.tar",
+  "bundle_identity": "6ffe055852f8faf66c0acbe1a7fb27f87b869a90bad1204f3bf4d9683f597c7c",
+  "command": "tools/tectonic/tectonic.exe report/report.tex --bundle https://data1b.fullyjustified.net/tlextras-2022.0r0.tar --outdir output/pdf --keep-logs --untrusted --only-cached",
+  "pages": 3,
+  "pdf_path": "output/pdf/solarfilament-report-draft.pdf",
+  "pdf_sha256": "0c0282343720edcb2a88adf614c708ddb4b060c492d5470e9c0c2c361b991b1a",
+  "source_sha256": {
+    "report\\report.tex": "e70854fb7e7160f765a9fd5d0274f9892673690edb3e253253c07ce291950b33",
+    "report\\preamble.tex": "d84c55e7236eabf92f427341acb95c37028a1cb514cfb97d61c76c117056667d",
+    "report\\main.bib": "03b60d2ea7e9bd2f18d63b607a0496c76859f0920e8251cf0dd3273035d691ee"
+  },
+  "overfull_warnings": 0,
+  "visual_review": "Rendered all three pages with bundled Poppler at 110 dpi; inspected all images. No clipped lines, overlapping text, missing glyphs or off-page tables observed. Pending placeholders intentionally visible.",
+  "nonfatal_warnings": [
+    "Fontconfig default config absent; bundled fonts resolved and rendered",
+    "BibTeX fields missing in some source entries; visible references resolve",
+    "Underfull spacing warnings"
+  ],
+  "network_recovery": "Default relay timed out; stale data1 endpoint returned 429. Current official relay mapping points to data1b, which compiled successfully; final run used cached resources."
+}

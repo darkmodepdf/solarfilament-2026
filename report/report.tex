@@ -25,13 +25,15 @@
 \documentclass[sigconf]{acmart}
 \input{preamble}
 \guideStylefalse
+% Permit modest extra word spacing without changing the official page geometry.
+\setlength{\emergencystretch}{2em}
 \newcommand{\pending}[1]{\textcolor{red}{\textbf{Pending: #1}}}
 \begin{document}
 \title{Annotation-aware Native-scale U-Net for Solar Filament Instance Segmentation}
 \subtitle{A Solution to the Solar Filament Segmentation Challenge 2026}
-\author{Author name pending confirmation}
-\affiliation{\institution{Affiliation pending confirmation}\city{City pending}\country{Country pending}}
-\email{email-pending@example.invalid}
+\author{Vishwas Bollam}
+% Name confirmed from the participant's authenticated Kaggle profile.
+% Affiliation, city, country and contact email await participant confirmation.
 \begin{abstract}
 This report describes our solution to the Solar Filament Segmentation Challenge~2026, a Kaggle competition on automatic segmentation of solar filaments in GONG H-$\alpha$ observations.
 We implement an existing ResNet34 U-Net with native-resolution crops, complete-annotation-pass sampling and full-image probability blending. Temporal observation groups prevent adjacent-day structures from crossing validation folds. The organizer's pooled per-pass Panoptic Quality selects checkpoints and post-processing settings. \pending{insert measured validation PQ, selected model, inference cost and accepted submission result. This draft is not a final report.}
@@ -66,9 +68,9 @@ Official PQ / validated compressed-COCO submission}}
 \end{figure}
 
 \subsection{Network and optimization}
-We use U-Net~\cite{ronneberger2015unet} from Segmentation Models PyTorch~0.5.0 with a ResNet34 encoder~\cite{he2016resnet}, five encoder stages, decoder channels $(256,128,64,32,16)$, batch normalization and nearest-neighbor upsampling. The output is one foreground logit. The encoder uses public ImageNet initialization; the decoder uses library initialization. The pinned model-source revision and distinct code/weight licensing status are documented with the release.
+We use U-Net~\cite{ronneberger2015unet} from Segmentation Models PyTorch~0.5.0 with a ResNet34 encoder~\cite{he2016resnet}, five encoder stages and decoder channels 256, 128, 64, 32 and 16. The decoder uses batch normalization and nearest-neighbor upsampling. The output is one foreground logit. The encoder uses public ImageNet initialization; the decoder uses library initialization. The pinned model-source revision and distinct code and weight licensing status are documented with the release.
 
-Grayscale pixels are scaled by $1/255$, repeated across three channels, then standardized by ImageNet means $(0.485,0.456,0.406)$ and standard deviations $(0.229,0.224,0.225)$. Training crops are $768\times768$ at original pixel scale. Augmentation uses quarter-turn rotations, independent flips, multiplicative intensity factors in $[0.95,1.05]$, additive shifts in $[-0.03,0.03]$, and Gaussian noise with standard deviation $0.015$ with probability $0.15$. These intensity operations act after standardization in this implementation. No blur is used.
+Grayscale pixels are scaled by $1/255$, repeated across three channels, then standardized by ImageNet means 0.485, 0.456 and 0.406 and standard deviations 0.229, 0.224 and 0.225. Training crops are $768\times768$ at original pixel scale. Augmentation uses quarter-turn rotations, independent flips, multiplicative intensity factors in $[0.95,1.05]$, additive shifts in $[-0.03,0.03]$, and Gaussian noise with standard deviation $0.015$ with probability $0.15$. These intensity operations act after standardization in this implementation. No blur is used.
 
 For predicted foreground probabilities $p$ and binary target $y$, the loss is
 \begin{equation}
@@ -77,7 +79,7 @@ For predicted foreground probabilities $p$ and binary target $y$, the loss is
 Dice is computed per crop and then averaged. AdamW starts at learning rate $3\times10^{-4}$ with weight decay $10^{-4}$ and a 4,000-step cosine schedule. The effective batch is eight. On two GPUs, batch two per GPU uses two accumulation microsteps. We use FP16 loss scaling, gradient norm clipping at one and one DDP process per GPU. Disjoint global sample indices deterministically select observations, passes and transformations, allowing data progress to resume consistently. \pending{report actual completed steps, selected checkpoint and hardware from the run.}
 
 \subsection{Inference and instance construction}
-Tiles retain the training crop size and target 25\% overlap. Boundary-anchored final tiles can overlap more. A two-dimensional Hann window, floored at $0.001$, blends tile probabilities; stitching precedes object extraction. Eight-connected foreground components form disjoint instances. Initial settings are threshold $0.45$ and minimum area 32 native pixels. Optional reconstruction preserves pixels above a low threshold when connected to a high-threshold seed. It may recover faint extensions but can also merge neighbors. We apply neither global morphological closing nor fixed edge-ring suppression. Test-time augmentation is disabled in the baseline.
+Tiles retain the training crop size, with nominal overlap of 25\%. Final tiles touch the image border and can overlap more. We average their probabilities using a two-dimensional Hann window with minimum weight $0.001$. Instances are extracted only after stitching. A component consists of foreground pixels connected horizontally, vertically or diagonally. The initial threshold is $0.45$ and the minimum area is 32 native pixels. Optional reconstruction starts above the high threshold and expands only through pixels above the low threshold. This can recover faint extensions and can also join nearby filaments. The baseline uses no global morphological closing, fixed edge-ring suppression or test-time augmentation.
 
 \section{Evaluation}\label{sec:evaluation}
 \subsection{Scorer fidelity and model selection}
@@ -126,7 +128,7 @@ Runs save configurations, source identity, actual environment versions, data/spl
 
 The inference path disables encoder downloads and loads the frozen trained checkpoint. Compressed COCO RLE represents each nonempty disjoint instance with an exact image stem and unique suffix. Validation checks dimensions, overlap, ID uniqueness and RLE round trips. A sidecar accounts for every test image, including zero detections. A valid CSV alone does not prove platform acceptance.
 
-\pending{insert public repository commit, immutable weight/checksum and configuration links, clean inference-equivalence result, final selected submission ID and receipts. Confirm participant author/contact fields, replace all pending markers, and verify four pages excluding Acknowledgment and References.}
+\pending{insert the public repository commit, immutable weight hashes, configuration links and clean inference reproduction result. Include the selected submission ID and receipts. Confirm the author and contact fields, replace all pending markers, and verify four pages excluding Acknowledgment and References.}
 
 AI assistance was used for implementation, tests and drafting. The participant is responsible for reviewing the method, explaining its choices and reproducing the final result.
 

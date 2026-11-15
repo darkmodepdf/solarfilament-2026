@@ -31,6 +31,15 @@ so it can continue faithfully. With two T4 GPUs it launches two DDP processes. T
 10 hours starting before extraction/install, including a configured one-hour final reserve.
 Hardware runtime, output availability and throughput still need confirmation from the live run.
 
+`--fold 0`, `--fold 1`, or `--fold 2` selects a member of the same frozen split for an independent
+run; both training and tuning receive that fold. Initial fallback runs use `--total-hours 4`,
+with one hour reserved for final work. The runtime inspects actual devices: an accepted L4
+request was allocated T4x2 by Kaggle, so requested metadata is never used as hardware evidence.
+All scientific work after package installation runs in a fresh interpreter to avoid stale
+NumPy imports in the persistent notebook. A production-size two-step smoke also tests a real
+complete-image validation and cache/checkpoint provenance before the long run. A checked
+fallback CSV is saved before deadline-bounded tuning.
+
 After successful completion, save durable outputs locally:
 
 ```powershell

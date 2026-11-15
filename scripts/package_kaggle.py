@@ -20,10 +20,12 @@ def cell(source: str, markdown: bool = False) -> dict:
 
 
 def package(root: Path, output: Path, *, owner: str, slug: str, title: str,
-            max_steps: int = 1000, total_hours: float = 10, smoke_only: bool = False,
+            max_steps: int = 1000, total_hours: float = 10, smoke_only: bool = False, fold: int = 0,
             resume_kernel: str | None = None, machine_shape: str = "NvidiaTeslaT4") -> dict:
     if max_steps < 1 or not 1 < total_hours <= 10:
         raise ValueError("max_steps must be positive and total_hours must be >1 and <=10")
+    if fold not in (0, 1, 2):
+        raise ValueError("fold must be 0, 1 or 2 for the fixed three-fold split")
     root, output = root.resolve(), output.resolve()
     files = []
     for pattern in ("src/**/*.py", "configs/*.yaml", "configs/*.json", "tests/*.py",
@@ -48,7 +50,7 @@ def package(root: Path, output: Path, *, owner: str, slug: str, title: str,
     payload = archive.getvalue()
     digest = hashlib.sha256(payload).hexdigest()
     encoded = base64.b64encode(payload).decode("ascii")
-    settings = {"max_steps": max_steps, "total_hours": total_hours, "smoke_only": smoke_only,
+    settings = {"max_steps": max_steps, "total_hours": total_hours, "smoke_only": smoke_only, "fold": fold,
                 "resume_kernel": resume_kernel, "source_sha256": digest}
     cells = [cell("""
         # Solar Filament — reproducible training and prediction
@@ -135,6 +137,8 @@ def package(root: Path, output: Path, *, owner: str, slug: str, title: str,
                         '--splits', 'runs/data/splits.json', '--session-start', SESSION_START,
                         '--total-hours', SETTINGS['total_hours']]
         config = yaml.safe_load(pathlib.Path('configs/baseline.yaml').read_text())
+        config['fold'] = SETTINGS['fold']
+        pathlib.Path('configs/baseline.yaml').write_text(yaml.safe_dump(config))
         smoke = {**config, 'encoder_weights': None, 'crop_size': 128, 'batch_size': 1,
                  'effective_batch_size': max(2, GPU_COUNT), 'workers': 0,
                  'max_steps': 4, 'skip_validation': True, 'validation_limit': 1}
@@ -201,7 +205,7 @@ def package(root: Path, output: Path, *, owner: str, slug: str, title: str,
                     run([sys.executable, '-m', 'solarfilament.cli', 'tune',
                          '--manifest', 'runs/data/manifest.json', '--splits', 'runs/data/splits.json',
                          '--cache-dir', 'runs/baseline/validation', '--output', 'runs/selected.json',
-                         '--deadline', tuning_deadline])
+                         '--deadline', tuning_deadline, '--fold', SETTINGS['fold']])
                     if pathlib.Path('runs/selected.json').is_file() and time.time()+1.5*fallback_seconds+120 < total_deadline:
                         run([sys.executable, '-m', 'solarfilament.cli', 'predict',
                              '--checkpoint', 'runs/baseline/best.pt', '--image-dir', DATA_ROOT/'test/test_images',
@@ -305,6 +309,7 @@ if __name__ == "__main__":
     parser.add_argument("--max-steps", type=int, default=1000)
     parser.add_argument("--total-hours", type=float, default=10)
     parser.add_argument("--smoke-only", action="store_true")
+    parser.add_argument("--fold", type=int, default=0)
     parser.add_argument("--resume-kernel")
     parser.add_argument("--machine-shape", default="NvidiaTeslaT4")
     package(**vars(parser.parse_args()))

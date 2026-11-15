@@ -1,8 +1,8 @@
 # Annotation-aware native-scale U-Net for solar filament instance segmentation
 
-**Working draft — not a final submission.** Author name, affiliation and contact email require participant confirmation. Kaggle username `vishwasbollam` is confirmed. Reported model quality, compute measurements, final weights, repository URL, submission ID and acceptance receipts are pending. No blank below represents a measured zero.
+**Working draft — not a final submission.** Author name **Vishwas Bollam** and Kaggle username `vishwasbollam` were confirmed from the authenticated Kaggle profile. Affiliation and contact email remain unconfirmed and are omitted from the typeset draft. Reported model quality, compute measurements, final weights, submission ID and acceptance receipts are pending. No blank below represents a measured zero.
 
-The actual organizer template was retrieved from its [Overleaf share](https://www.overleaf.com/read/vjztpvrnbrdh#43fbbe). `report/report.tex` preserves its fixed subtitle, introductory text and acknowledgments. The limit is four pages **excluding Acknowledgment and References**. Its main source uses `acmart[sigconf]`; the final PDF has not yet been compiled or checked for page count. Template archive SHA-256: `7c725e69d30d4cbe9e194ef34f1da214ce962817bd1b728b2efec77708f1bff3`.
+The actual organizer template was retrieved from its [Overleaf share](https://www.overleaf.com/read/vjztpvrnbrdh#43fbbe). `report/report.tex` preserves its fixed subtitle, introductory text and acknowledgments. The limit is four pages **excluding Acknowledgment and References**. Its main source uses `acmart[sigconf]`. A three-page draft PDF was compiled locally with Tectonic 0.17.0 and all pages rendered and inspected; long-line overflows were corrected. This is a layout check, not a final report or final page-limit certification once results and figures are added. Compiler, bundle, source/PDF hashes and nonfatal warning details are in [the build record](../report/build-record.json). Template archive SHA-256: `7c725e69d30d4cbe9e194ef34f1da214ce962817bd1b728b2efec77708f1bff3`.
 
 ## Abstract
 
