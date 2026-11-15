@@ -1,0 +1,10 @@
+{
+  "source_url": "https://www.kaggle.com/code/azimahmadzadeh/self-evaluation-notebook",
+  "kaggle_notebook_id": 130222308,
+  "retrieved_date": "2026-11-15",
+  "file": "self-evaluation-notebook.ipynb",
+  "sha256": "ae7c9445b4eee2b77b216df5c9772fdf92fda15611e98abd7ef5f02a4e380801",
+  "retrieval_command": "kaggle kernels pull azimahmadzadeh/self-evaluation-notebook -p vendor/official --metadata",
+  "license_status": "Not identified in downloaded metadata; verify before redistributing original notebook",
+  "parity": "Original functions compared with local implementation on synthetic fixtures, full-size CSV fixture, and a real multiply annotated training-image fixture with manufactured perturbed predictions; first20 training polygons match COCO.annToMask exactly"
+}

@@ -1,0 +1,282 @@
+[
+  {
+    "physical_id": "20140430071914Th",
+    "annotation_pass_id": "020101",
+    "stats": {
+      "instance_count": 26,
+      "empty_instances": 0,
+      "mask_area_sum": 32369,
+      "foreground_area": 32369,
+      "overlap_area": 0,
+      "area_min": 117,
+      "area_median": 650.0,
+      "area_max": 5337
+    }
+  },
+  {
+    "physical_id": "20150518145654Bh",
+    "annotation_pass_id": "010101",
+    "stats": {
+      "instance_count": 24,
+      "empty_instances": 0,
+      "mask_area_sum": 24987,
+      "foreground_area": 24987,
+      "overlap_area": 0,
+      "area_min": 94,
+      "area_median": 755.0,
+      "area_max": 4265
+    }
+  },
+  {
+    "physical_id": "20131025185414Mh",
+    "annotation_pass_id": "010101",
+    "stats": {
+      "instance_count": 23,
+      "empty_instances": 0,
+      "mask_area_sum": 49582,
+      "foreground_area": 49582,
+      "overlap_area": 0,
+      "area_min": 277,
+      "area_median": 819.0,
+      "area_max": 19473
+    }
+  },
+  {
+    "physical_id": "20150228082414Th",
+    "annotation_pass_id": "010403",
+    "stats": {
+      "instance_count": 11,
+      "empty_instances": 0,
+      "mask_area_sum": 31063,
+      "foreground_area": 31054,
+      "overlap_area": 9,
+      "area_min": 9,
+      "area_median": 1267.0,
+      "area_max": 10088
+    }
+  },
+  {
+    "physical_id": "20120523163014Mh",
+    "annotation_pass_id": "050202",
+    "stats": {
+      "instance_count": 16,
+      "empty_instances": 0,
+      "mask_area_sum": 32440,
+      "foreground_area": 32380,
+      "overlap_area": 60,
+      "area_min": 60,
+      "area_median": 1412.5,
+      "area_max": 7533
+    }
+  },
+  {
+    "physical_id": "20160430133734Ch",
+    "annotation_pass_id": "050202",
+    "stats": {
+      "instance_count": 11,
+      "empty_instances": 0,
+      "mask_area_sum": 5832,
+      "foreground_area": 5832,
+      "overlap_area": 0,
+      "area_min": 73,
+      "area_median": 570.0,
+      "area_max": 1466
+    }
+  },
+  {
+    "physical_id": "20130107174854Bh",
+    "annotation_pass_id": "050102",
+    "stats": {
+      "instance_count": 11,
+      "empty_instances": 0,
+      "mask_area_sum": 70018,
+      "foreground_area": 70018,
+      "overlap_area": 0,
+      "area_min": 1512,
+      "area_median": 3386.0,
+      "area_max": 21514
+    }
+  },
+  {
+    "physical_id": "20150614162514Mh",
+    "annotation_pass_id": "010402",
+    "stats": {
+      "instance_count": 10,
+      "empty_instances": 0,
+      "mask_area_sum": 61703,
+      "foreground_area": 61703,
+      "overlap_area": 0,
+      "area_min": 546,
+      "area_median": 1885.5,
+      "area_max": 25394
+    }
+  },
+  {
+    "physical_id": "20220710085152Th",
+    "annotation_pass_id": "010203",
+    "stats": {
+      "instance_count": 11,
+      "empty_instances": 0,
+      "mask_area_sum": 63138,
+      "foreground_area": 63138,
+      "overlap_area": 0,
+      "area_min": 574,
+      "area_median": 3254.0,
+      "area_max": 30769
+    }
+  },
+  {
+    "physical_id": "20140903073614Th",
+    "annotation_pass_id": "040201",
+    "stats": {
+      "instance_count": 6,
+      "empty_instances": 0,
+      "mask_area_sum": 16656,
+      "foreground_area": 16656,
+      "overlap_area": 0,
+      "area_min": 190,
+      "area_median": 547.5,
+      "area_max": 9978
+    }
+  },
+  {
+    "physical_id": "20130719140154Bh",
+    "annotation_pass_id": "050102",
+    "stats": {
+      "instance_count": 13,
+      "empty_instances": 0,
+      "mask_area_sum": 21755,
+      "foreground_area": 21755,
+      "overlap_area": 0,
+      "area_min": 442,
+      "area_median": 997.0,
+      "area_max": 8245
+    }
+  },
+  {
+    "physical_id": "20130725122934Ch",
+    "annotation_pass_id": "030101",
+    "stats": {
+      "instance_count": 16,
+      "empty_instances": 0,
+      "mask_area_sum": 24880,
+      "foreground_area": 24880,
+      "overlap_area": 0,
+      "area_min": 514,
+      "area_median": 1162.0,
+      "area_max": 6755
+    }
+  },
+  {
+    "physical_id": "20160518011654Uh",
+    "annotation_pass_id": "020101",
+    "stats": {
+      "instance_count": 9,
+      "empty_instances": 0,
+      "mask_area_sum": 5299,
+      "foreground_area": 5299,
+      "overlap_area": 0,
+      "area_min": 260,
+      "area_median": 502.0,
+      "area_max": 1164
+    }
+  },
+  {
+    "physical_id": "20160501143154Bh",
+    "annotation_pass_id": "020403",
+    "stats": {
+      "instance_count": 7,
+      "empty_instances": 0,
+      "mask_area_sum": 6060,
+      "foreground_area": 6060,
+      "overlap_area": 0,
+      "area_min": 627,
+      "area_median": 770.0,
+      "area_max": 1246
+    }
+  },
+  {
+    "physical_id": "20160808133714Th",
+    "annotation_pass_id": "040201",
+    "stats": {
+      "instance_count": 7,
+      "empty_instances": 0,
+      "mask_area_sum": 16486,
+      "foreground_area": 16486,
+      "overlap_area": 0,
+      "area_min": 829,
+      "area_median": 1166.0,
+      "area_max": 8513
+    }
+  },
+  {
+    "physical_id": "20170107133714Th",
+    "annotation_pass_id": "010101",
+    "stats": {
+      "instance_count": 1,
+      "empty_instances": 0,
+      "mask_area_sum": 2350,
+      "foreground_area": 2350,
+      "overlap_area": 0,
+      "area_min": 2350,
+      "area_median": 2350.0,
+      "area_max": 2350
+    }
+  },
+  {
+    "physical_id": "20141024195834Ch",
+    "annotation_pass_id": "040102",
+    "stats": {
+      "instance_count": 6,
+      "empty_instances": 0,
+      "mask_area_sum": 20408,
+      "foreground_area": 20408,
+      "overlap_area": 0,
+      "area_min": 407,
+      "area_median": 1765.5,
+      "area_max": 11105
+    }
+  },
+  {
+    "physical_id": "20180202130330Ch",
+    "annotation_pass_id": "050103",
+    "stats": {
+      "instance_count": 3,
+      "empty_instances": 0,
+      "mask_area_sum": 2080,
+      "foreground_area": 2080,
+      "overlap_area": 0,
+      "area_min": 561,
+      "area_median": 630.0,
+      "area_max": 889
+    }
+  },
+  {
+    "physical_id": "20180714000010Mh",
+    "annotation_pass_id": "040401",
+    "stats": {
+      "instance_count": 2,
+      "empty_instances": 0,
+      "mask_area_sum": 1499,
+      "foreground_area": 1499,
+      "overlap_area": 0,
+      "area_min": 748,
+      "area_median": 749.5,
+      "area_max": 751
+    }
+  },
+  {
+    "physical_id": "20150125172714Mh",
+    "annotation_pass_id": "010402",
+    "stats": {
+      "instance_count": 5,
+      "empty_instances": 0,
+      "mask_area_sum": 11518,
+      "foreground_area": 11518,
+      "overlap_area": 0,
+      "area_min": 542,
+      "area_median": 1818.0,
+      "area_max": 4876
+    }
+  }
+]

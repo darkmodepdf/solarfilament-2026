@@ -1,0 +1,15 @@
+{
+  "retrieved_date": "2026-11-15",
+  "source": "https://www.overleaf.com/read/vjztpvrnbrdh#43fbbe",
+  "project_name": "kaggle_comp_report_fi_segm_2026",
+  "archive_sha256": "7c725e69d30d4cbe9e194ef34f1da214ce962817bd1b728b2efec77708f1bff3",
+  "files": {
+    "main.bib": "c14249c4aa3480203126abe5c6c35884f1ee79c648e6c67ed10d5eac7747121c",
+    "main.tex": "f65b1345c077e1a685f017ff4c6cd39ca25f47b5579434cd93fec887f60c5b42",
+    "main_backup.tex": "d41dbcd8c9c3ddd777ef70de9c534c908de599d215cbfc92bfe4dc40cf78e3ee",
+    "preamble.tex": "d84c55e7236eabf92f427341acb95c37028a1cb514cfb97d61c76c117056667d"
+  },
+  "format": "acmart sigconf",
+  "limit": "four pages excluding Acknowledgment and References",
+  "status": "official template retrieved; report draft not compiled and measurements/author fields pending"
+}

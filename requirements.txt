@@ -1,0 +1,11 @@
+numpy==2.2.6
+pillow==11.2.1
+scipy==1.15.3
+pycocotools==2.0.10
+pandas==2.2.3
+PyYAML==6.0.2
+segmentation-models-pytorch==0.5.0
+psutil==7.0.0
+# Install a matching CUDA build on GPU hosts. Local verification uses CPU wheels.
+torch==2.7.1
+torchvision==0.22.1

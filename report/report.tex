@@ -1,0 +1,144 @@
+% =============================================================================
+% COPYRIGHT AND DISCLAIMER
+% =============================================================================
+% This file is provided as a convenience template for competition participants.
+% By using it, you accept full responsibility for compliance with all applicable
+% copyright, licensing, and usage rules of the Association for Computing
+% Machinery (ACM) and of any LaTeX packages you load (including, without
+% limitation, the "acmart" document class and related ACM materials).
+%
+% Consult ACM's official publication, template, and copyright policies before
+% using this setup for any purpose other than this competition. Do not assume
+% that this template may be reused, redistributed, or submitted elsewhere
+% without independently verifying ACM's current rules.
+%
+% Use of the "acmart" class, the "sigconf" option, or ACM-style formatting in
+% this template does NOT mean that this report, this competition, its organizers,
+% or any resulting PDF is sponsored, endorsed, affiliated with, or published by
+% ACM. ACM trademarks and branding remain the property of ACM.
+%
+% Template packages live in preamble.tex.
+% Citations live in main.bib. Edit this file with your paper content.
+% =============================================================================
+
+
+\documentclass[sigconf]{acmart}
+\input{preamble}
+\guideStylefalse
+\newcommand{\pending}[1]{\textcolor{red}{\textbf{Pending: #1}}}
+\begin{document}
+\title{Annotation-aware Native-scale U-Net for Solar Filament Instance Segmentation}
+\subtitle{A Solution to the Solar Filament Segmentation Challenge 2026}
+\author{Author name pending confirmation}
+\affiliation{\institution{Affiliation pending confirmation}\city{City pending}\country{Country pending}}
+\email{email-pending@example.invalid}
+\begin{abstract}
+This report describes our solution to the Solar Filament Segmentation Challenge~2026, a Kaggle competition on automatic segmentation of solar filaments in GONG H-$\alpha$ observations.
+We implement an existing ResNet34 U-Net with native-resolution crops, complete-annotation-pass sampling and full-image probability blending. Temporal observation groups prevent adjacent-day structures from crossing validation folds. The organizer's pooled per-pass Panoptic Quality selects checkpoints and post-processing settings. \pending{insert measured validation PQ, selected model, inference cost and accepted submission result. This draft is not a final report.}
+\end{abstract}
+\maketitle
+
+\section{Introduction}
+This report goes over the details of our submitted solution to the Solar Filament Segmentation Challenge~2026 \cite{filament-segmentation-2026}. The challenge, launched on July~10,~2026, is organized by the Earth-Space AI Research (ESAIR) Lab\footnote{\href{https://www.esairlab.com/home}{www.esairlab.com/}}. This challenge utilizes the MAGFiLO dataset for evaluation of the segmentation algorithms \cite{ahmadzadeh2024dataset}.
+Our focus is reliable validation and a reproducible instance-construction baseline under a fixed compute budget. We do not claim a new network architecture. The method preserves original annotation passes, trains a semantic foreground predictor, then evaluates the resulting disjoint objects using the inspected organizer implementation.
+
+\section{Methodology}\label{sec:methodology}
+\subsection{Permitted data and grouping}
+The official download contains 707 physical training images, 1,154 annotation-pass records and 8,199 instance masks, plus 180 test images. Every image is $2048\times2048$. We rasterize the supplied polygons with pycocotools~2.0.10. Only instance identifiers and segmentation coordinates enter the training manifest; spines and other auxiliary annotations are excluded. All categories become foreground. Five original passes contain overlapping instance masks and are retained unchanged for evaluation.
+
+Same-day and adjacent-calendar-day observations are joined across instruments, transitively, along with exact image hashes. Adjacent-date inspection showed persistent evolving structures; grouping all such pairs avoids setting a similarity threshold from disk appearance. The resulting 502 groups have at most five images each. Deterministic balancing over year, instrument and filament density gives folds of 236, 236 and 235 physical images. Fold~0 is the development holdout; training uses the remaining 471 observations. Three defined folds do not imply three trained models. Exact data and split identities are hashed in the released manifests.
+
+Each sample selects a physical observation uniformly, then selects one complete annotation pass uniformly. We union that pass's masks only for its semantic training target. This avoids overweighting images with more annotators or creating duplicate instances by concatenating independent interpretations. With probability 0.5 a crop contains a sampled foreground pixel; otherwise its center is selected from the solar disk using an intensity-based rejection rule. Crops are clamped to image bounds. Validation uses complete images and untouched individual passes.
+
+\begin{figure}[t]
+\centering
+\fbox{\parbox{0.93\linewidth}{\centering
+Official images + permitted polygons\\
+$\downarrow$ physical/date groups and complete passes\\
+Native-scale crops $\rightarrow$ ResNet34 U-Net\\
+$\downarrow$ complete-image overlapping-tile probabilities\\
+Windowed blending $\rightarrow$ threshold/reconstruction\\
+$\downarrow$ disjoint connected components\\
+Official PQ / validated compressed-COCO submission}}
+\caption{Training, validation and inference share preprocessing. Instances are formed after full-image probability stitching. The test branch uses only supplied image pixels and frozen model/configuration assets.}
+\Description{A sequential diagram linking permitted annotations, grouped observations, crop training, whole-image probability blending, disjoint objects and evaluation or submission.}
+\label{fig:pipeline}
+\end{figure}
+
+\subsection{Network and optimization}
+We use U-Net~\cite{ronneberger2015unet} from Segmentation Models PyTorch~0.5.0 with a ResNet34 encoder~\cite{he2016resnet}, five encoder stages, decoder channels $(256,128,64,32,16)$, batch normalization and nearest-neighbor upsampling. The output is one foreground logit. The encoder uses public ImageNet initialization; the decoder uses library initialization. The pinned model-source revision and distinct code/weight licensing status are documented with the release.
+
+Grayscale pixels are scaled by $1/255$, repeated across three channels, then standardized by ImageNet means $(0.485,0.456,0.406)$ and standard deviations $(0.229,0.224,0.225)$. Training crops are $768\times768$ at original pixel scale. Augmentation uses quarter-turn rotations, independent flips, multiplicative intensity factors in $[0.95,1.05]$, additive shifts in $[-0.03,0.03]$, and Gaussian noise with standard deviation $0.015$ with probability $0.15$. These intensity operations act after standardization in this implementation. No blur is used.
+
+For predicted foreground probabilities $p$ and binary target $y$, the loss is
+\begin{equation}
+\mathcal{L}=\tfrac12\mathcal{L}_{\mathrm{BCE}}+\tfrac12\left(1-\frac{2\sum_i p_i y_i+1}{\sum_i p_i+\sum_i y_i+1}\right).
+\end{equation}
+Dice is computed per crop and then averaged. AdamW starts at learning rate $3\times10^{-4}$ with weight decay $10^{-4}$ and a 4,000-step cosine schedule. The effective batch is eight. On two GPUs, batch two per GPU uses two accumulation microsteps. We use FP16 loss scaling, gradient norm clipping at one and one DDP process per GPU. Disjoint global sample indices deterministically select observations, passes and transformations, allowing data progress to resume consistently. \pending{report actual completed steps, selected checkpoint and hardware from the run.}
+
+\subsection{Inference and instance construction}
+Tiles retain the training crop size and target 25\% overlap. Boundary-anchored final tiles can overlap more. A two-dimensional Hann window, floored at $0.001$, blends tile probabilities; stitching precedes object extraction. Eight-connected foreground components form disjoint instances. Initial settings are threshold $0.45$ and minimum area 32 native pixels. Optional reconstruction preserves pixels above a low threshold when connected to a high-threshold seed. It may recover faint extensions but can also merge neighbors. We apply neither global morphological closing nor fixed edge-ring suppression. Test-time augmentation is disabled in the baseline.
+
+\section{Evaluation}\label{sec:evaluation}
+\subsection{Scorer fidelity and model selection}
+We pin the organizer's self-evaluation notebook by SHA-256 and compare our implementation against its executed original functions on synthetic and competition-data fixtures. The implementation computes float32 pairwise IoU and counts all pairs strictly above $0.5$; it does not enforce one-to-one assignment. We reproduce this calculation but export disjoint masks rather than duplicate overlapping predictions. Across original annotation passes,
+\begin{equation}
+\mathrm{PQ}=\frac{\sum_{(g,p):\,\mathrm{IoU}(g,p)>0.5}\mathrm{IoU}(g,p)}{\mathrm{TP}+0.5\mathrm{FP}+0.5\mathrm{FN}}.
+\end{equation}
+The numerator and counts are pooled before division. An image's predictions are compared against each complete pass. Whole-image PQ, not crop Dice, chooses the checkpoint. The original CSV wrapper discovers passes from ground-truth rows and excludes absent empty-GT passes; this behavior is recorded separately from empty-image diagnostics.
+
+On the best checkpoint's cached development probabilities, we evaluate 32 settings: high thresholds $\{0.35,0.45,0.55,0.65\}$, minimum areas $\{0,32,128,256\}$ and either no reconstruction or a low threshold $0.15$ below the high threshold. Defaults are starting points, not measured optima. Selection on this same holdout is development performance, not independent confirmation.
+
+\begin{table}[t]
+\centering
+\caption{Results must be populated from saved model outputs. ``Pending'' does not mean zero. No score is fabricated.}
+\begin{tabular}{lccc}
+\toprule
+Configuration & PQ & SQ & RQ\\
+\midrule
+Baseline checkpoint & pending & pending & pending\\
+Selected post-processing & pending & pending & pending\\
+Confirmation fold & not run & not run & not run\\
+\bottomrule
+\end{tabular}
+\label{tab:results}
+\end{table}
+
+\pending{insert measured TP/FP/FN, checkpoint step, selected thresholds, held-out IoU/Dice distributions, and actual public submission receipt. Quantify a change only if its experiment completed. If estimating uncertainty, resample temporal groups rather than annotation rows.}
+
+\begin{figure}[t]
+\centering
+\fbox{\parbox{0.93\linewidth}{\centering\vspace{10mm}
+\pending{actual held-out input/GT/prediction overlays: an ordinary case and a failure.}
+\vspace{10mm}}}
+\caption{Placeholder requiring actual model predictions. Ground-truth audit sheets must not be substituted and labeled as prediction results.}
+\Description{A clearly labeled placeholder for measured validation overlays, not fabricated segmentation output.}
+\label{fig:examples}
+\end{figure}
+
+\subsection{Limitations and efficiency}
+The semantic foreground model has no explicit object identity; connected components can merge neighboring filaments or fragment long ones. Faint structures and annotator disagreement remain potential error sources. Their frequency and contribution to PQ must be measured before selecting another model family. The current development split does not provide independent evidence after repeated tuning. No completed multi-fold result, winning rank or generalization confidence interval is claimed.
+
+\pending{insert named GPU allocation, actual package versions, training and total wall time, GPU-hours, full-image inference seconds, peak memory, and count of processed test images. Report measurements, not target budgets.}
+
+\subsection{Reproducibility and final assets}
+Runs save configurations, source identity, actual environment versions, data/split hashes, initialization provenance and device information. Recovery checkpoints include weights, optimizer, scheduler, scaler, per-rank RNG state, optimizer step and sample position. The session clock begins before setup; evaluation, saving and export receive a reserved budget. Resume is checked before long training, and continuation requires compatible data, split, world size and recipe.
+
+The inference path disables encoder downloads and loads the frozen trained checkpoint. Compressed COCO RLE represents each nonempty disjoint instance with an exact image stem and unique suffix. Validation checks dimensions, overlap, ID uniqueness and RLE round trips. A sidecar accounts for every test image, including zero detections. A valid CSV alone does not prove platform acceptance.
+
+\pending{insert public repository commit, immutable weight/checksum and configuration links, clean inference-equivalence result, final selected submission ID and receipts. Confirm participant author/contact fields, replace all pending markers, and verify four pages excluding Acknowledgment and References.}
+
+AI assistance was used for implementation, tests and drafting. The participant is responsible for reviewing the method, explaining its choices and reproducing the final result.
+
+\section{Acknowledgment}\label{sec:acknowledgment}
+    % Do not change
+    The organization of the Filament Segmentation Challenge 2026 is partially supported by the U.S. National Science Foundation (NSF) under Grant No. 2209912 and 2433781, directorate for Computer and Information Science and Engineering (CSE), and Office of Advanced Cyberinfrastructure (OAC), and Grant No. 2511630, AST Division Of Astronomical Sciences and MPS Directorate for Mathematical and Physical Sciences.
+
+    The Filament Segmentation Challenge 2026 is sponsored by the U.S. National Science Foundation (NSF) National Solar Observatory (NSO).
+
+    This work utilizes GONG data obtained by the NSO Integrated Synoptic Program, managed by the National Solar Observatory, which is operated by the Association of Universities for Research in Astronomy (AURA), Inc. under a cooperative agreement with the National Science Foundation and with contribution from the National Oceanic and Atmospheric Administration. The GONG network of instruments is hosted by the Big Bear Solar Observatory, High Altitude Observatory, Learmonth Solar Observatory, Udaipur Solar Observatory, Instituto de Astrofísica de Canarias, and Cerro Tololo Interamerican Observatory.
+
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{main}
+\end{document}
